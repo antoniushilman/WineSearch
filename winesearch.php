@@ -34,7 +34,7 @@
 				height:120px;"
 				/>
 			</th>
-			<th style="font-size:32px;">
+			<th style="font-size:32px;" align="left">
 				<br/>
 				Wine Store Search
 			</th>
