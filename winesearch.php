@@ -18,6 +18,9 @@
 		padding: 10px;
 	}
 	</style>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+	
 </head>
 <body>
 <form action="searchresult.php" method=get>
@@ -92,9 +95,9 @@
 				Year
 			</td>
 			<td>
-				<input type="text" size="8" name="startyear"/>
+				<input type="number" min="1000" max = "9999" name="startyear" style="width: 65px"/>
 				~
-				<input type="text" size="8" name="endyear"/>
+				<input type="number" min="1000" max = "9999" name="endyear" style="width: 65px"/>
 			</td>
 		</tr>
 		
@@ -103,7 +106,7 @@
 				Minimum Stock
 			</td>
 			<td>
-				<input type="text" size="3" name="minstock"/>
+				<input type="number" min="0" max = "9999" name="minstock"/>
 			</td>
 		</tr>
 		
@@ -112,7 +115,7 @@
 				Customer who purchased:
 			</td>
 			<td>
-				<input type="text" size="3" name="customerno"/>
+				<input type="number" min="0" max = "9999" name="customerno"/>
 			</td>
 		</tr>
 		
@@ -121,9 +124,9 @@
 				Price
 			</td>
 			<td>
-				$<input type="text" size="5" name="minprice"/>
+				$<input type="number" min="0" max = "9999" name="minprice"/>
 				~
-				$<input type="text" size="5" name="maxprice"/>
+				$<input type="number" min="0" max = "9999" name="maxprice"/>
 			</td>
 		</tr>
 		
