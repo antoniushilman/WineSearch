@@ -15,7 +15,8 @@
 	
 	th, td
 	{
-		padding: 10px;
+		text-align: center;
+		padding: 15px;
 	}
 	</style>
 </head>
@@ -25,9 +26,10 @@
 	require 'db.inc';
 	
 	//Obtaining user input
+	$regionid = 0;
 	$wine = $_GET['winename'];
 	$region = $_GET['regions'];
-	$winery = $_GET['wineryname'];
+	$wineryname = $_GET['wineryname'];
 	$yearstart = $_GET['startyear'];
 	$yearend = $_GET['endyear'];
 	$minimal = $_GET['minstock'];
@@ -56,7 +58,7 @@
 			</th>
 			<th style="font-size:32px">
 				<br/>
-				Wine Store Search
+				Wine Store Search Result
 			</th>
 			
 			<tr>
@@ -87,26 +89,141 @@
 	}
 	
 	//showing the wines result in tables that is correct
-	function displaycorrectresults($results)
+	function displaycorrectresults($result)
 	{
-		print '<h1 style="margin: auto"> Search Result </h1>';
-		
-		//tables
-		print "<table>
+		//table 1 for the header
+		print '<table>
+	
 		<tr>
-		<th>Wine Name</th>
-		<th>Wine Variety</th>
-		<th>Year</th>
-		<th>Winery</th>
-		<th>Region</th>
-		<th>Cost</th>
-		<th>Availability</th>
-		<th>Customer who had purchased</th>
-		</tr>";
+			<th rowspan="2"  align="center">
+				<img src="logo.png" alt="Wine Store" 
+				style="float:left; 
+				width:120px;
+				height:120px;"
+				/>
+			</th>
+			<th style="font-size:32px;" align="left">
+				<br/>
+				Wine Store Search
+			</th>
+			
+			<tr>
+				<td style="font-size:10px">
+					Created by Antonius Hilman
+				</td>
+			</tr>
+		</tr>
+	
+		<tr>
+			<th>Wine Name</th>
+			<th>Wine Variety</th>
+			<th>Year</th>
+			<th>Winery</th>
+			<th>Region</th>
+			<th>Cost</th>
+			<th>Availability</th>
+			<th>No. Customer</th>
+		</tr>';
+		
+		// Until there are no rows in the result set, fetch a row into
+		// the $row array and ...
+		while ($row =  mysqli_fetch_array($result))
+		{
+			// ... start a TABLE row ...
+			echo "<tr>";
+			// ... and print out each of the attributes in that row as 
+			// a separate TD (Table Data).
+			echo "<td>".($row["wine_name"])."</td>";
+			echo "<td>".($row["wine_type"])."</td>";
+			echo "<td>".($row["year"])."</td>";
+			echo "<td>".($row["winery_name"])."</td>";
+			echo "<td>".($row["region_name"])."</td>";
+			echo "<td>".($row["cost"])."</td>";
+			echo "<td>".($row["on_hand"])."</td>";
+			echo "<td>".($row["cost"])."</td>";
+			// Finish the row
+			echo "</tr>";
+		}
+		print "</table>";
 	}
+	
+	//Validation if no input
+	
+	if($wine == NULL)
+	{
+		$wine = "";
+	}
+	
+	if($wineryname == NULL)
+	{
+		$wineryname = "";
+	}
+	
+	if($region == "All")
+	{
+		$region = "";
+	}
+	
+	if($yearstart == NULL)
+	{
+		$yearstart = 1970;
+	}
+	
+	if($yearend == NULL)
+	{
+		$yearend = 1999;
+	}
+	
+	if($minimal == NULL)
+	{
+		$minimal = 0;
+	}
+	
+	if($customer == NULL)
+	{
+		$customer = 0;
+	}
+	
+	if($minimalprice == NULL)
+	{
+		$minimalprice = 0;
+	}
+	
+	if($maximalprice == NULL)
+	{
+		$maximalprice = 1000;
+	}
+	
+	//query for all user input
+	$query = "SELECT 
+	wine_name, wine_type, year, winery_name, region_name, cost, qty, on_hand 
+	FROM 
+	wine, wine_type, winery, items, region, inventory
+	WHERE 
+	wine.winery_id = winery.winery_id AND 
+	winery.region_id = region.region_id AND 
+	wine.wine_id = items.wine_id AND 
+	wine.wine_id = inventory.wine_id AND 
+	wine_type.wine_type_id = wine.wine_type_id AND 
+	
+	wine_name LIKE '%".$wine."%' AND 
+	winery_name LIKE '%".$wineryname."%' AND 
+	region_name LIKE '%".$region."%' AND 
+	on_hand >= '".$minimal."' AND 
+	(year BETWEEN '".$yearstart."' AND '".$yearend."') AND 
+	(cost BETWEEN '".$minimalprice."' AND '".$maximalprice."') AND 
+	qty >= '".$customer."'
+	";
+	
+	// Connect to the MySQL server
+	$connection = mysqli_connect("localhost","root","gg.com","winestore");
+	$result = mysqli_query ($connection, $query);
 
+	// Display the results
+	displaycorrectresults($result);
 ?>
 
 </body>
 </html>
+
 	
