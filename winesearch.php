@@ -70,11 +70,9 @@
 					$connection = mysqli_connect("localhost","root","gg.com","winestore");
 					$result = mysqli_query ($connection,"SELECT region_name FROM region");
 					echo '<select name="regions">';
-					$i = 0;
 					while ($row=mysqli_fetch_array($result))
 					{
-						echo "<option value=$i>".($row["region_name"])."</option>";
-						$i++;
+						echo "<option>".($row["region_name"])."</option>";
 					}
 					echo "</select>";
 				?>
@@ -95,9 +93,9 @@
 				Year
 			</td>
 			<td>
-				<input type="number" min="1000" max = "9999" name="startyear" style="width: 65px"/>
+				<input type="number" min="1970" max = "1999" name="startyear" style="width: 65px"/>
 				~
-				<input type="number" min="1000" max = "9999" name="endyear" style="width: 65px"/>
+				<input type="number" min="1970" max = "1999" name="endyear" style="width: 65px"/>
 			</td>
 		</tr>
 		
