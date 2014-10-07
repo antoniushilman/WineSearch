@@ -24,7 +24,6 @@
 <body>
 	
 <?php
-	require 'db.inc';
 	
 	//Obtaining user input
 	$regionid = 0;
@@ -71,11 +70,6 @@
 		$minimal = 0;
 	}
 	
-	if($customer == NULL)
-	{
-		$customer = 0;
-	}
-	
 	if($minimalprice == NULL)
 	{
 		$minimalprice = 0;
@@ -84,6 +78,11 @@
 	if($maximalprice == NULL)
 	{
 		$maximalprice = 1000;
+	}
+	
+	if($customer == NULL)
+	{
+		$customer = 0;
 	}
 	
 	//Year and Price validation
@@ -95,23 +94,34 @@
 	{
 		//query for all user input
 		$query = "SELECT 
-		wine_name, wine_type, year, winery_name, region_name, cost, qty, on_hand 
+		wine_name, variety, year, winery_name, region_name, cost, on_hand, COUNT(items.cust_id) AS TotalCustomer
 		FROM 
-		wine, wine_type, winery, items, region, inventory
+		wine, winery, items, region, inventory, grape_variety, wine_variety
 		WHERE 
 		wine.winery_id = winery.winery_id AND 
 		winery.region_id = region.region_id AND 
 		wine.wine_id = items.wine_id AND 
 		wine.wine_id = inventory.wine_id AND 
-		wine_type.wine_type_id = wine.wine_type_id AND 
-	
+		wine.wine_id = wine_variety.wine_id AND
+		wine_variety.variety_id = grape_variety.variety_id AND 
+		
 		wine_name LIKE '%".$wine."%' AND 
 		winery_name LIKE '%".$wineryname."%' AND 
 		region_name LIKE '%".$region."%' AND 
 		on_hand >= '".$minimal."' AND 
 		(year BETWEEN '".$yearstart."' AND '".$yearend."') AND 
-		(cost BETWEEN '".$minimalprice."' AND '".$maximalprice."') AND 
-		qty >= '".$customer."'
+		(cost BETWEEN '".$minimalprice."' AND '".$maximalprice."')
+		
+		GROUP BY
+		wine.wine_name, 
+		grape_variety.variety,
+		wine.year,
+		winery.winery_name,
+		region.region_name,
+		inventory.cost,
+		inventory.on_hand
+		
+		HAVING (TotalCustomer >= '".$customer."')
 		";
 	
 		// Connect to the MySQL server
@@ -242,16 +252,18 @@
 		{
 			// ... start a TABLE row ...
 			echo "<tr>";
+			
 			// ... and print out each of the attributes in that row as 
 			// a separate TD (Table Data).
 			echo "<td>".($row["wine_name"])."</td>";
-			echo "<td>".($row["wine_type"])."</td>";
+			echo "<td>".($row["variety"])."</td>";
 			echo "<td>".($row["year"])."</td>";
 			echo "<td>".($row["winery_name"])."</td>";
 			echo "<td>".($row["region_name"])."</td>";
 			echo "<td>".($row["cost"])."</td>";
 			echo "<td>".($row["on_hand"])."</td>";
-			echo "<td>".($row["qty"])."</td>";
+			echo "<td>".($row["TotalCustomer"])."</td>";
+			
 			// Finish the row
 			echo "</tr>";
 		}
