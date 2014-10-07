@@ -17,6 +17,7 @@
 	{
 		text-align: center;
 		padding: 15px;
+		margin:auto;
 	}
 	</style>
 </head>
@@ -91,29 +92,61 @@
 	//showing the wines result in tables that is correct
 	function displaycorrectresults($result)
 	{
-		//table 1 for the header
-		print '<table>
-	
-		<tr>
-			<th rowspan="2"  align="center">
+		//table 1
+		if(mysqli_num_rows($result) == 0)
+		{
+			print '<table>
+			<tr>
+			<th style="font-size:32px; text-align:left" colspan="9" align="center">
 				<img src="logo.png" alt="Wine Store" 
 				style="float:left; 
 				width:120px;
 				height:120px;"
 				/>
+					Wine Store Search
+				<p style="font-size:10px">
+					Created by Antonius Hilman
+				</p>
 			</th>
-			<th style="font-size:32px;" align="left">
-				<br/>
-				Wine Store Search
-			</th>
+			</tr>
 			
 			<tr>
-				<td style="font-size:10px">
-					Created by Antonius Hilman
+			<th colspan="2" style="text-align:center; font-size:20px">
+				Search Result
+			</th>
+			</tr>
+			
+			<tr>
+				<td>
+					No search found
 				</td>
 			</tr>
-		</tr>
+			
+			</table>';
+		}
+		else
+		{
+		//table 2
+		print '<table>
 	
+		<tr>
+			<th style="font-size:32px; text-align:left" colspan="9" align="center">
+				<img src="logo.png" alt="Wine Store" 
+				style="float:left; 
+				width:120px;
+				height:120px;"
+				/>
+					Wine Store Search
+				<p style="font-size:10px">
+					Created by Antonius Hilman
+				</p>
+			</th>
+		</tr>
+		<tr>
+			<th colspan="9" style="text-align:center; font-size:20px">
+				Search Result
+			</th>
+		</tr>
 		<tr>
 			<th>Wine Name</th>
 			<th>Wine Variety</th>
@@ -140,11 +173,12 @@
 			echo "<td>".($row["region_name"])."</td>";
 			echo "<td>".($row["cost"])."</td>";
 			echo "<td>".($row["on_hand"])."</td>";
-			echo "<td>".($row["cost"])."</td>";
+			echo "<td>".($row["qty"])."</td>";
 			// Finish the row
 			echo "</tr>";
 		}
-		print "</table>";
+			print "</table>";
+		}
 	}
 	
 	//Validation if no input
