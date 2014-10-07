@@ -38,10 +38,88 @@
 	$minimalprice = $_GET['minprice'];
 	$maximalprice = $_GET['maxprice'];
 	
+		
+	//Validation if no input
+	
+	if($wine == NULL)
+	{
+		$wine = "";
+	}
+	
+	if($wineryname == NULL)
+	{
+		$wineryname = "";
+	}
+	
+	if($region == "All")
+	{
+		$region = "";
+	}
+	
+	if($yearstart == NULL)
+	{
+		$yearstart = 1970;
+	}
+	
+	if($yearend == NULL)
+	{
+		$yearend = 1999;
+	}
+	
+	if($minimal == NULL)
+	{
+		$minimal = 0;
+	}
+	
+	if($customer == NULL)
+	{
+		$customer = 0;
+	}
+	
+	if($minimalprice == NULL)
+	{
+		$minimalprice = 0;
+	}
+	
+	if($maximalprice == NULL)
+	{
+		$maximalprice = 1000;
+	}
+	
 	//Year and Price validation
 	if($yearstart > $yearend || $minimalprice > $maximalprice)
 	{
 		displayvalidationerror();
+	}
+	else
+	{
+		//query for all user input
+		$query = "SELECT 
+		wine_name, wine_type, year, winery_name, region_name, cost, qty, on_hand 
+		FROM 
+		wine, wine_type, winery, items, region, inventory
+		WHERE 
+		wine.winery_id = winery.winery_id AND 
+		winery.region_id = region.region_id AND 
+		wine.wine_id = items.wine_id AND 
+		wine.wine_id = inventory.wine_id AND 
+		wine_type.wine_type_id = wine.wine_type_id AND 
+	
+		wine_name LIKE '%".$wine."%' AND 
+		winery_name LIKE '%".$wineryname."%' AND 
+		region_name LIKE '%".$region."%' AND 
+		on_hand >= '".$minimal."' AND 
+		(year BETWEEN '".$yearstart."' AND '".$yearend."') AND 
+		(cost BETWEEN '".$minimalprice."' AND '".$maximalprice."') AND 
+		qty >= '".$customer."'
+		";
+	
+		// Connect to the MySQL server
+		$connection = mysqli_connect("localhost","root","gg.com","winestore");
+		$result = mysqli_query ($connection, $query);
+
+		// Display the results
+		displaycorrectresults($result);
 	}
 	
 	//showing error message if validation is wrong
@@ -180,81 +258,6 @@
 			print "</table>";
 		}
 	}
-	
-	//Validation if no input
-	
-	if($wine == NULL)
-	{
-		$wine = "";
-	}
-	
-	if($wineryname == NULL)
-	{
-		$wineryname = "";
-	}
-	
-	if($region == "All")
-	{
-		$region = "";
-	}
-	
-	if($yearstart == NULL)
-	{
-		$yearstart = 1970;
-	}
-	
-	if($yearend == NULL)
-	{
-		$yearend = 1999;
-	}
-	
-	if($minimal == NULL)
-	{
-		$minimal = 0;
-	}
-	
-	if($customer == NULL)
-	{
-		$customer = 0;
-	}
-	
-	if($minimalprice == NULL)
-	{
-		$minimalprice = 0;
-	}
-	
-	if($maximalprice == NULL)
-	{
-		$maximalprice = 1000;
-	}
-	
-	//query for all user input
-	$query = "SELECT 
-	wine_name, wine_type, year, winery_name, region_name, cost, qty, on_hand 
-	FROM 
-	wine, wine_type, winery, items, region, inventory
-	WHERE 
-	wine.winery_id = winery.winery_id AND 
-	winery.region_id = region.region_id AND 
-	wine.wine_id = items.wine_id AND 
-	wine.wine_id = inventory.wine_id AND 
-	wine_type.wine_type_id = wine.wine_type_id AND 
-	
-	wine_name LIKE '%".$wine."%' AND 
-	winery_name LIKE '%".$wineryname."%' AND 
-	region_name LIKE '%".$region."%' AND 
-	on_hand >= '".$minimal."' AND 
-	(year BETWEEN '".$yearstart."' AND '".$yearend."') AND 
-	(cost BETWEEN '".$minimalprice."' AND '".$maximalprice."') AND 
-	qty >= '".$customer."'
-	";
-	
-	// Connect to the MySQL server
-	$connection = mysqli_connect("localhost","root","gg.com","winestore");
-	$result = mysqli_query ($connection, $query);
-
-	// Display the results
-	displaycorrectresults($result);
 ?>
 
 </body>
