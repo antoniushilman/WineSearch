@@ -23,7 +23,7 @@
 	
 </head>
 <body>
-<form action="searchresult.php" method=get>
+<form action="searchresulttemplate.php" method=get>
 	<table>
 	
 		<tr>
