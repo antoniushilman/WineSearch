@@ -26,7 +26,6 @@
 <?php
 	
 	//Obtaining user input
-	$regionid = 0;
 	$wine = $_GET['winename'];
 	$region = $_GET['regions'];
 	$wineryname = $_GET['wineryname'];
